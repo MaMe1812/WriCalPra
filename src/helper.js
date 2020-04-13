@@ -54,20 +54,19 @@ function fillCellInfoMatrix(operation, operands) {
   // addition
   let nrOperands = operands.length;
 
-  addChar("+", matrix, 0, nrOperands - 1);
-  addChar("=", matrix, 0, nrOperands);
-  //addNumber(operands[0], matrix, 3, 0);
+  addChar("+", matrix, nrOperands - 1, 0);
+  addChar("=", matrix, nrOperands, 0);
+  addNumber(operands[0], matrix, 0, 3);
   return matrix;
 }
 
-function addChar(char, matrix, colIndex, rowIndex) {
+function addChar(char, matrix, rowIndex, colIndex) {
   matrix[rowIndex][colIndex].displayValue = char;
 }
 
-function addNumber(number, matrix, colIndex, rowIndex) {
-  var chars = number.split("");
+function addNumber(number, matrix, rowIndex, colIndex) {
+  var chars = number.toString().split("");
   for (let index = 0; index < chars.length; index++) {
-    addChar(chars[index], matrix, colIndex + index, nrOperands);
+    addChar(chars[index], matrix, rowIndex, colIndex + index);
   }
-  matrix[rowIndex][colIndex].displayValue = char;
 }
