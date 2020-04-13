@@ -1,3 +1,8 @@
+
+This is small project to learn svelte and javascript by doing. If finished it will be able to display a mathematic task and optional results and hints.
+
+---
+
 *Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
 
 ---
