@@ -2,34 +2,10 @@
   import { showSolution } from "./stores.js";
   import { showHints } from "./stores.js";
   import NumericCell from "./NumericCell.svelte";
-  // 34*2=68
-  let cellInfos = [
-    [
-      { task: true },
-      { displayValue: "3", task: true },
-      { displayValue: "4", task: true },
-      { displayValue: "*", task: true },
-      { displayValue: "2", task: true },
-      { displayValue: "=", task: true },
-      { displayValue: " ", solutionValue: "6" },
-      { displayValue: " ", solutionValue: "8" },
-      { displayValue: " " },
-      { displayValue: " " }
-    ],
+  import { getCellInfos } from "./helper.js";
 
-    [
-      { task: true },
-      { displayValue: "3", task: true },
-      { displayValue: "4", task: true },
-      { displayValue: "*", task: true },
-      { displayValue: "2", task: true },
-      { displayValue: "=", task: true },
-      { displayValue: " ", solutionValue: "6" },
-      { displayValue: " ", solutionValue: "8" },
-      { displayValue: " " },
-      { displayValue: " " }
-    ]
-  ];
+  let cellInfos = getCellInfos("+", 2);
+
   let lastAddedCell;
   let showSolution_value;
 
