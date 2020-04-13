@@ -54,19 +54,32 @@ function fillCellInfoMatrix(operation, operands) {
   // addition
   let nrOperands = operands.length;
 
-  addChar("+", matrix, nrOperands - 1, 0);
-  addChar("=", matrix, nrOperands, 0);
-  addNumber(operands[0], matrix, 0, 3);
+  setDisplayValue("+", matrix, nrOperands - 1, 0);
+  setDisplayValue("=", matrix, nrOperands, 0);
+  const sum = (accumulator, currentValue) => accumulator + currentValue;
+  let result = operands.reduce(sum);
+  addNumber(result, matrix, nrOperands, 1, true);
+  addNumber(operands[0], matrix, 0, 1);
+  addNumber(operands[1], matrix, 1, 1);
+
   return matrix;
 }
 
-function addChar(char, matrix, rowIndex, colIndex) {
+function setDisplayValue(char, matrix, rowIndex, colIndex) {
   matrix[rowIndex][colIndex].displayValue = char;
 }
 
-function addNumber(number, matrix, rowIndex, colIndex) {
+function setSolutionValue(char, matrix, rowIndex, colIndex) {
+  matrix[rowIndex][colIndex].solutionValue = char;
+}
+
+function addNumber(number, matrix, rowIndex, colIndex, isResult = false) {
   var chars = number.toString().split("");
   for (let index = 0; index < chars.length; index++) {
-    addChar(chars[index], matrix, rowIndex, colIndex + index);
+    if (isResult) {
+      setSolutionValue(chars[index], matrix, rowIndex, colIndex + index);
+    } else {
+      setDisplayValue(chars[index], matrix, rowIndex, colIndex + index);
+    }
   }
 }
