@@ -12,10 +12,9 @@ export function getLevels() {
 
 function GetOperands(operation, level) {
   // addition
-  let nrOperands = (level / 5 + 1) * 2;
-  let nrOperandDigits = level / 2 + 1;
+  let nrOperands = Math.floor(level / 5 + 1) * 2;
+  let nrOperandDigits = Math.floor(level / 2) + 1;
   let operands = [];
-
   for (let index = 0; index < nrOperands; index++) {
     operands.push(getRandomNumber(nrOperandDigits));
   }

@@ -79,15 +79,12 @@
 <button on:click={() => showHints.update(n => !n)}>
   {showHints_value ? 'Hide hints' : 'Show hints'}
 </button>
-
+<br />
+<select bind:value={selectedLevel}>
+  {#each levels as level}
+    <option value={level.id}>{level.text}</option>
+  {/each}
+</select>
 <button on:click={() => (cellInfos = getCellInfos('+', selectedLevel))}>
   New task
 </button>
-
-<form on:submit|preventDefault={() => {}}>
-  <select bind:value={selectedLevel}>
-    {#each levels as level}
-      <option value={level.id}>{level.text}</option>
-    {/each}
-  </select>
-</form>
