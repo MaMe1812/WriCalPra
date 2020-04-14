@@ -1,37 +1,6 @@
 export function getCellInfos(operation, level) {
-  // 34*2=68
-  let operands = [123, 456];
+  let operands = [123, 456, 9500];
   return fillCellInfoMatrix(operation, operands);
-
-  let cellInfos = [
-    [
-      { task: true },
-      { displayValue: "3", task: true },
-      { displayValue: "4", task: true },
-      { displayValue: "*", task: true },
-      { displayValue: "2", task: true },
-      { displayValue: "=", task: true },
-      { displayValue: " ", solutionValue: "6" },
-      { displayValue: " ", solutionValue: "8" },
-      { displayValue: " " },
-      { displayValue: " " },
-    ],
-
-    [
-      { task: true },
-      { displayValue: "3", task: true },
-      { displayValue: "4", task: true },
-      { displayValue: "*", task: true },
-      { displayValue: "2", task: true },
-      { displayValue: "=", task: true },
-      { displayValue: " ", solutionValue: "6" },
-      { displayValue: " ", solutionValue: "8" },
-      { displayValue: " " },
-      { displayValue: " " },
-    ],
-  ];
-  console.log("test");
-  return cellInfos;
 }
 
 function createCellInfoMatrix() {
@@ -58,9 +27,23 @@ function fillCellInfoMatrix(operation, operands) {
   setDisplayValue("=", matrix, nrOperands, 0);
   const sum = (accumulator, currentValue) => accumulator + currentValue;
   let result = operands.reduce(sum);
-  addNumber(result, matrix, nrOperands, 1, true);
-  addNumber(operands[0], matrix, 0, 1);
-  addNumber(operands[1], matrix, 1, 1);
+  var endIndex = addNumber({
+    number: result,
+    matrix,
+    rowIndex: nrOperands,
+    refColIndex: 1,
+    isResult: true,
+  });
+  for (let index = 0; index < operands.length; index++) {
+    const operand = operands[index];
+    addNumber({
+      number: operand,
+      matrix,
+      rowIndex: index,
+      refColIndex: endIndex + 1,
+      alignRight: true,
+    });
+  }
 
   return matrix;
 }
@@ -73,13 +56,24 @@ function setSolutionValue(char, matrix, rowIndex, colIndex) {
   matrix[rowIndex][colIndex].solutionValue = char;
 }
 
-function addNumber(number, matrix, rowIndex, colIndex, isResult = false) {
+function addNumber({
+  number,
+  matrix,
+  rowIndex,
+  refColIndex,
+  isResult,
+  alignRight,
+}) {
   var chars = number.toString().split("");
-  for (let index = 0; index < chars.length; index++) {
+  for (var index = 0; index < chars.length; index++) {
+    let colIndex = refColIndex + index;
+    if (alignRight) colIndex -= chars.length;
+
     if (isResult) {
-      setSolutionValue(chars[index], matrix, rowIndex, colIndex + index);
+      setSolutionValue(chars[index], matrix, rowIndex, colIndex);
     } else {
-      setDisplayValue(chars[index], matrix, rowIndex, colIndex + index);
+      setDisplayValue(chars[index], matrix, rowIndex, colIndex);
     }
   }
+  return index;
 }
