@@ -25,6 +25,7 @@ function fillCellInfoMatrix(operation, operands) {
 
   setDisplayValue("+", matrix, nrOperands - 1, 0);
   setDisplayValue("=", matrix, nrOperands, 0);
+  setIsTask(matrix, nrOperands, 0);
   const sum = (accumulator, currentValue) => accumulator + currentValue;
   let result = operands.reduce(sum);
   var endIndex = addNumber({
@@ -34,6 +35,8 @@ function fillCellInfoMatrix(operation, operands) {
     refColIndex: 1,
     isResult: true,
   });
+  fillIsTask(matrix, nrOperands, endIndex + 2);
+
   for (let index = 0; index < operands.length; index++) {
     const operand = operands[index];
     addNumber({
@@ -52,8 +55,20 @@ function setDisplayValue(char, matrix, rowIndex, colIndex) {
   matrix[rowIndex][colIndex].displayValue = char;
 }
 
+function setIsTask(matrix, rowIndex, colIndex) {
+  matrix[rowIndex][colIndex].task = true;
+}
+
 function setSolutionValue(char, matrix, rowIndex, colIndex) {
   matrix[rowIndex][colIndex].solutionValue = char;
+}
+
+function fillIsTask(matrix, nrRows, nrCols) {
+  for (let rowIndex = 0; rowIndex < nrRows; rowIndex++) {
+    for (let colIndex = 0; colIndex < nrCols; colIndex++) {
+      setIsTask(matrix, rowIndex, colIndex);
+    }
+  }
 }
 
 function addNumber({
