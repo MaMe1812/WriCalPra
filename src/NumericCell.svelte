@@ -52,6 +52,10 @@
     margin: 0px;
   }
 
+  .underline {
+    border-bottom: 1px solid black;
+  }
+
   .showHints_false {
     background-color: rgba(200, 0, 0, 0.2);
   }
@@ -61,11 +65,13 @@
   }
 </style>
 
-<input
-  readonly={item.task}
-  bind:this={ref}
-  bind:value={displayValue}
-  on:keydown={callCallback}
-  type="text"
-  maxlength="1"
-  class={showHints_value && item.solutionValue ? (item.displayValue === item.solutionValue ? 'showHints_good' : 'showHints_false') : ''} />
+<div class:underline={item.underline}>
+  <input
+    readonly={item.task}
+    bind:this={ref}
+    bind:value={displayValue}
+    on:keydown={callCallback}
+    type="text"
+    maxlength="1"
+    class={showHints_value && item.solutionValue ? (item.displayValue === item.solutionValue ? 'showHints_good' : 'showHints_false') : ''} />
+</div>

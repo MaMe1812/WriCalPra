@@ -47,8 +47,15 @@ function fillCellInfoMatrix(operation, operands) {
       alignRight: true,
     });
   }
+  setUnderline(matrix, nrOperands - 1, 0, endIndex);
 
   return matrix;
+}
+
+function setUnderline(matrix, rowIndex, startColIndex, endColIndex) {
+  for (let colIndex = startColIndex; colIndex <= endColIndex; colIndex++) {
+    matrix[rowIndex][colIndex].underline = true;
+  }
 }
 
 function setDisplayValue(char, matrix, rowIndex, colIndex) {
