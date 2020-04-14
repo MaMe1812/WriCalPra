@@ -2,9 +2,11 @@
   import { showSolution } from "./stores.js";
   import { showHints } from "./stores.js";
   import NumericCell from "./NumericCell.svelte";
-  import { getCellInfos } from "./helper.js";
+  import { getCellInfos, getLevels } from "./helper.js";
 
-  let cellInfos = getCellInfos("+", 2);
+  let selectedLevel = 1;
+  let levels = getLevels();
+  let cellInfos = getCellInfos("+", selectedLevel);
 
   let lastAddedCell;
   let showSolution_value;
@@ -77,3 +79,15 @@
 <button on:click={() => showHints.update(n => !n)}>
   {showHints_value ? 'Hide hints' : 'Show hints'}
 </button>
+
+<button on:click={() => (cellInfos = getCellInfos('+', selectedLevel))}>
+  New task
+</button>
+
+<form on:submit|preventDefault={() => {}}>
+  <select bind:value={selectedLevel}>
+    {#each levels as level}
+      <option value={level.id}>{level.text}</option>
+    {/each}
+  </select>
+</form>

@@ -1,6 +1,32 @@
 export function getCellInfos(operation, level) {
-  let operands = [123, 456, 9500];
+  let operands = GetOperands(operation, level); //[123, 456, 9500];
   return fillCellInfoMatrix(operation, operands);
+}
+export function getLevels() {
+  let levels = [];
+  for (let index = 0; index < 10; index++) {
+    levels.push({ id: index + 1, text: `Level ${index + 1}` });
+  }
+  return levels;
+}
+
+function GetOperands(operation, level) {
+  // addition
+  let nrOperands = (level / 5 + 1) * 2;
+  let nrOperandDigits = level / 2 + 1;
+  let operands = [];
+
+  for (let index = 0; index < nrOperands; index++) {
+    operands.push(getRandomNumber(nrOperandDigits));
+  }
+
+  return operands;
+}
+
+function getRandomNumber(nrOperandDigits) {
+  let min = 0;
+  let max = Math.pow(10, nrOperandDigits);
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function createCellInfoMatrix() {
