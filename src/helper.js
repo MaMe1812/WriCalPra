@@ -48,7 +48,7 @@ function GetOperands(operation, level) {
 }
 
 function getRandomNumber(nrOperandDigits) {
-  let min = 0;
+  let min = Math.pow(10, nrOperandDigits - 1);
   let max = Math.pow(10, nrOperandDigits);
   return Math.floor(Math.random() * (max - min)) + min;
 }
@@ -100,8 +100,9 @@ function fillCellInfosForDivision(operands, matrix) {
   });
   setDisplayValue("=", matrix, 0, lenOp1 + lenOp2 + 1);
   fillIsTask(matrix, 1, lenOp1 + lenOp2 + 2);
+  let result = Math.floor(operands[0] / operands[1]);
   let resultLen = addNumber({
-    number: Math.floor(operands[0] / operands[1]),
+    number: result,
     matrix,
     rowIndex: 0,
     refColIndex: lenOp1 + lenOp2 + 2,
