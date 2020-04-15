@@ -13,22 +13,27 @@ export function getOperations() {
   let operations = [];
   operations.push("+");
   operations.push("-");
+  operations.push("*");
   return operations;
 }
 
 function GetOperands(operation, level) {
   let operands = [];
+  let nrOperandDigits;
   switch (operation) {
     case "+":
     case "-":
       let nrOperands = Math.floor(level / 5 + 1) * 2;
-      let nrOperandDigits = Math.floor(level / 2) + 1;
+      nrOperandDigits = Math.floor(level / 2) + 1;
 
       for (let index = 0; index < nrOperands; index++) {
         operands.push(getRandomNumber(nrOperandDigits));
       }
       break;
-
+    case "*":
+      nrOperandDigits = Math.floor(level / 2) + 2;
+      operands.push(getRandomNumber(nrOperandDigits));
+      operands.push(getRandomNumber(nrOperandDigits));
     default:
       break;
   }
@@ -43,8 +48,8 @@ function getRandomNumber(nrOperandDigits) {
 }
 
 function createCellInfoMatrix() {
-  let columns = 10;
-  let rows = 8;
+  let columns = 20;
+  let rows = 16;
   let matrix = [];
 
   for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
@@ -62,13 +67,63 @@ function fillCellInfoMatrix(operation, operands) {
   switch (operation) {
     case "+":
       return fillCellInfosForAddition(operands, matrix);
-
     case "-":
       return fillCellInfosForSubstraction(operands, matrix);
-
+    case "*":
+      return fillCellInfosForMultiplication(operands, matrix);
     default:
       break;
   }
+}
+
+function fillCellInfosForMultiplication(operands, matrix) {
+  let lenOp1 = addNumber({
+    number: operands[0],
+    matrix,
+    rowIndex: 0,
+    refColIndex: 0,
+  });
+  setDisplayValue("*", matrix, 0, lenOp1);
+  let lenOp2 = addNumber({
+    number: operands[1],
+    matrix,
+    rowIndex: 0,
+    refColIndex: lenOp1 + 1,
+  });
+  let endIndex = lenOp2 + lenOp1 + 1;
+  fillIsTask(matrix, 1, endIndex + 2);
+
+  setHelpInputLine(matrix, lenOp2 + 1);
+  setUnderline(matrix, lenOp2 + 1, 0, endIndex);
+
+  setDisplayValue("=", matrix, lenOp2 + 2, 0);
+  setIsTask(matrix, lenOp2 + 2, 0);
+  addNumber({
+    number: operands[0] * operands[1],
+    matrix,
+    rowIndex: lenOp2 + 2,
+    refColIndex: endIndex,
+    isResult: true,
+    alignRight: true,
+  });
+
+  for (let index = 0; index < lenOp2; index++) {
+    let digit = getDigit(operands[1], index);
+    addNumber({
+      number: operands[0] * digit,
+      matrix,
+      rowIndex: lenOp2 - index,
+      refColIndex: endIndex - index,
+      isResult: true,
+      alignRight: true,
+    });
+  }
+  return matrix;
+}
+function getDigit(number, digitIndex) {
+  var div = Math.pow(10, digitIndex + 1);
+  var rem = number % div;
+  return Math.floor(rem / Math.pow(10, digitIndex));
 }
 
 function fillCellInfosForSubstraction(operands, matrix) {

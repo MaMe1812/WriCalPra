@@ -4,7 +4,7 @@
   import NumericCell from "./NumericCell.svelte";
   import { getCellInfos, getLevels, getOperations } from "./helper.js";
 
-  let selectedOperation = "-";
+  let selectedOperation = "*";
   let operations = getOperations();
   let selectedLevel = 5;
   let levels = getLevels();
