@@ -14,6 +14,7 @@ export function getOperations() {
   operations.push("+");
   operations.push("-");
   operations.push("*");
+  operations.push(":");
   return operations;
 }
 
@@ -34,6 +35,11 @@ function GetOperands(operation, level) {
       nrOperandDigits = Math.floor(level / 2) + 2;
       operands.push(getRandomNumber(nrOperandDigits));
       operands.push(getRandomNumber(nrOperandDigits));
+    case ":":
+      nrOperandDigits = Math.floor(level / 2) + 2;
+      operands.push(getRandomNumber(nrOperandDigits));
+      nrOperandDigits = Math.floor(level / 3) + 1;
+      operands.push(getRandomNumber(nrOperandDigits));
     default:
       break;
   }
@@ -48,7 +54,7 @@ function getRandomNumber(nrOperandDigits) {
 }
 
 function createCellInfoMatrix() {
-  let columns = 20;
+  let columns = 24;
   let rows = 16;
   let matrix = [];
 
@@ -71,9 +77,63 @@ function fillCellInfoMatrix(operation, operands) {
       return fillCellInfosForSubstraction(operands, matrix);
     case "*":
       return fillCellInfosForMultiplication(operands, matrix);
+    case ":":
+      return fillCellInfosForDivision(operands, matrix);
     default:
       break;
   }
+}
+
+function fillCellInfosForDivision(operands, matrix) {
+  let lenOp1 = addNumber({
+    number: operands[0],
+    matrix,
+    rowIndex: 0,
+    refColIndex: 0,
+  });
+  setDisplayValue(":", matrix, 0, lenOp1);
+  let lenOp2 = addNumber({
+    number: operands[1],
+    matrix,
+    rowIndex: 0,
+    refColIndex: lenOp1 + 1,
+  });
+  setDisplayValue("=", matrix, 0, lenOp1 + lenOp2 + 1);
+  fillIsTask(matrix, 1, lenOp1 + lenOp2 + 2);
+  let resultLen = addNumber({
+    number: Math.floor(operands[0] / operands[1]),
+    matrix,
+    rowIndex: 0,
+    refColIndex: lenOp1 + lenOp2 + 2,
+    isResult: true,
+  });
+  setSolutionValue("R", matrix, 0, lenOp1 + lenOp2 + resultLen + 2);
+  addNumber({
+    number: operands[0] % operands[1],
+    matrix,
+    rowIndex: 0,
+    refColIndex: lenOp1 + lenOp2 + resultLen + 3,
+    isResult: true,
+  });
+
+  /*
+  setHelpInputLine(matrix, lenOp2 + 1);
+  setUnderline(matrix, lenOp2 + 1, 0, endIndex);
+
+  setIsTask(matrix, lenOp2 + 2, 0);
+
+  for (let index = 0; index < lenOp2; index++) {
+    let digit = getDigit(operands[1], index);
+    addNumber({
+      number: operands[0] * digit,
+      matrix,
+      rowIndex: lenOp2 - index,
+      refColIndex: endIndex - index,
+      isResult: true,
+      alignRight: true,
+    });
+  }*/
+  return matrix;
 }
 
 function fillCellInfosForMultiplication(operands, matrix) {
