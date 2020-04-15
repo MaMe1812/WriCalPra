@@ -30,7 +30,6 @@
     if (item.task) {
       return;
     }
-    console.log(event.keyCode);
     if (
       (event.keyCode >= 48 && event.keyCode <= 90) ||
       (event.keyCode >= 96 && event.keyCode <= 105)
@@ -42,6 +41,14 @@
     }
     callback(item, row, event.keyCode);
   };
+
+  $: inputClass = item.helpInput
+    ? "helpInput"
+    : showHints_value && item.solutionValue
+    ? item.displayValue === item.solutionValue
+      ? "showHints_good"
+      : "showHints_false"
+    : "";
 </script>
 
 <style>
@@ -50,6 +57,7 @@
     width: 15px;
     padding: 1px;
     margin: 0px;
+    display: block;
   }
 
   .underline {
@@ -63,9 +71,18 @@
   .showHints_good {
     background-color: rgba(0, 200, 0, 0.2);
   }
+
+  .helpInput {
+    background-color: rgba(0, 0, 20, 0.02);
+    font: 0.6em sans-serif;
+    text-align: center;
+  }
+  .helpDiv {
+    height: 15px;
+  }
 </style>
 
-<div class:underline={item.underline}>
+<div class:underline={item.underline} class:helpDiv={item.helpInput}>
   <input
     readonly={item.task}
     bind:this={ref}
@@ -73,5 +90,5 @@
     on:keydown={callCallback}
     type="text"
     maxlength="1"
-    class={showHints_value && item.solutionValue ? (item.displayValue === item.solutionValue ? 'showHints_good' : 'showHints_false') : ''} />
+    class={inputClass} />
 </div>

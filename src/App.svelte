@@ -2,11 +2,13 @@
   import { showSolution } from "./stores.js";
   import { showHints } from "./stores.js";
   import NumericCell from "./NumericCell.svelte";
-  import { getCellInfos, getLevels } from "./helper.js";
+  import { getCellInfos, getLevels, getOperations } from "./helper.js";
 
-  let selectedLevel = 1;
+  let selectedOperation = "-";
+  let operations = getOperations();
+  let selectedLevel = 5;
   let levels = getLevels();
-  let cellInfos = getCellInfos("+", selectedLevel);
+  let cellInfos = getCellInfos(selectedOperation, selectedLevel);
 
   let lastAddedCell;
   let showSolution_value;
@@ -24,7 +26,6 @@
   const callback = (item, row, keyCode) => {
     var rowIndex = cellInfos.indexOf(row);
     var cellIndex = cellInfos[rowIndex].indexOf(item);
-    console.log(keyCode);
     switch (keyCode) {
       case 8:
       case 37:
@@ -36,10 +37,10 @@
       case 40: // down
         rowIndex++;
         break;
-      default:
       case 39:
         cellIndex++;
         break;
+      default:
     }
 
     var next = cellInfos[rowIndex][cellIndex];
@@ -80,11 +81,17 @@
   {showHints_value ? 'Hide hints' : 'Show hints'}
 </button>
 <br />
+<select bind:value={selectedOperation}>
+  {#each operations as operation}
+    <option value={operation}>{operation}</option>
+  {/each}
+</select>
 <select bind:value={selectedLevel}>
   {#each levels as level}
     <option value={level.id}>{level.text}</option>
   {/each}
 </select>
-<button on:click={() => (cellInfos = getCellInfos('+', selectedLevel))}>
+<button
+  on:click={() => (cellInfos = getCellInfos(selectedOperation, selectedLevel))}>
   New task
 </button>

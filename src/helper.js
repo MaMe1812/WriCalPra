@@ -9,14 +9,28 @@ export function getLevels() {
   }
   return levels;
 }
+export function getOperations() {
+  let operations = [];
+  operations.push("+");
+  operations.push("-");
+  return operations;
+}
 
 function GetOperands(operation, level) {
-  // addition
-  let nrOperands = Math.floor(level / 5 + 1) * 2;
-  let nrOperandDigits = Math.floor(level / 2) + 1;
   let operands = [];
-  for (let index = 0; index < nrOperands; index++) {
-    operands.push(getRandomNumber(nrOperandDigits));
+  switch (operation) {
+    case "+":
+    case "-":
+      let nrOperands = Math.floor(level / 5 + 1) * 2;
+      let nrOperandDigits = Math.floor(level / 2) + 1;
+
+      for (let index = 0; index < nrOperands; index++) {
+        operands.push(getRandomNumber(nrOperandDigits));
+      }
+      break;
+
+    default:
+      break;
   }
 
   return operands;
@@ -44,24 +58,74 @@ function createCellInfoMatrix() {
 }
 function fillCellInfoMatrix(operation, operands) {
   let matrix = createCellInfoMatrix();
+  console.log(operation);
+  switch (operation) {
+    case "+":
+      return fillCellInfosForAddition(operands, matrix);
 
-  // addition
+    case "-":
+      return fillCellInfosForSubstraction(operands, matrix);
+
+    default:
+      break;
+  }
+}
+
+function fillCellInfosForSubstraction(operands, matrix) {
   let nrOperands = operands.length;
-
-  setDisplayValue("+", matrix, nrOperands - 1, 0);
-  setDisplayValue("=", matrix, nrOperands, 0);
-  setIsTask(matrix, nrOperands, 0);
+  setDisplayValue("=", matrix, nrOperands + 1, 0);
+  setIsTask(matrix, nrOperands + 1, 0);
   const sum = (accumulator, currentValue) => accumulator + currentValue;
   let result = operands.reduce(sum);
   var endIndex = addNumber({
     number: result,
     matrix,
-    rowIndex: nrOperands,
+    rowIndex: 0,
+    refColIndex: 1,
+  });
+  fillIsTask(matrix, nrOperands, endIndex + 2);
+  for (let index = 0; index < operands.length - 1; index++) {
+    const operand = operands[index];
+    addNumber({
+      number: operand,
+      matrix,
+      rowIndex: index + 1,
+      refColIndex: endIndex + 1,
+      alignRight: true,
+    });
+  }
+  for (let index = 1; index < operands.length; index++) {
+    setDisplayValue("-", matrix, index, 0);
+  }
+
+  var endIndex = addNumber({
+    number: operands[operands.length - 1],
+    matrix,
+    rowIndex: operands.length + 1,
+    refColIndex: endIndex + 1,
+    isResult: true,
+    alignRight: true,
+  });
+
+  setHelpInputLine(matrix, nrOperands);
+  setUnderline(matrix, nrOperands, 0, endIndex + 1);
+  return matrix;
+}
+
+function fillCellInfosForAddition(operands, matrix) {
+  let nrOperands = operands.length;
+  setDisplayValue("=", matrix, nrOperands + 1, 0);
+  setIsTask(matrix, nrOperands + 1, 0);
+  const sum = (accumulator, currentValue) => accumulator + currentValue;
+  let result = operands.reduce(sum);
+  var endIndex = addNumber({
+    number: result,
+    matrix,
+    rowIndex: nrOperands + 1,
     refColIndex: 1,
     isResult: true,
   });
   fillIsTask(matrix, nrOperands, endIndex + 2);
-
   for (let index = 0; index < operands.length; index++) {
     const operand = operands[index];
     addNumber({
@@ -72,9 +136,18 @@ function fillCellInfoMatrix(operation, operands) {
       alignRight: true,
     });
   }
-  setUnderline(matrix, nrOperands - 1, 0, endIndex);
-
+  for (let index = 1; index < operands.length; index++) {
+    setDisplayValue("+", matrix, index, 0);
+  }
+  setHelpInputLine(matrix, nrOperands);
+  setUnderline(matrix, nrOperands, 0, endIndex);
   return matrix;
+}
+
+function setHelpInputLine(matrix, rowIndex) {
+  matrix[rowIndex].forEach((element) => {
+    element.helpInput = true;
+  });
 }
 
 function setUnderline(matrix, rowIndex, startColIndex, endColIndex) {
